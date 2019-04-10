@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Grpc.Core;
+using MagicOnion.Client;
+using MagicOnionSample.ServiceDefinition;
+using System;
 
 namespace MagicOnionSample.Client
 {
@@ -6,7 +9,16 @@ namespace MagicOnionSample.Client
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            // standard gRPC channel
+            var channel = new Channel("localhost", 12345, ChannelCredentials.Insecure);
+
+            // get MagicOnion dynamic client proxy
+            var client = MagicOnionClient.Create<IMyFirstService>(channel);
+
+            // call method.
+            var result = client.SumAsync(100, 200).GetAwaiter().GetResult();
+
+            Console.WriteLine("Client Received:" + result);
         }
     }
 }
